@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Dashboard Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="public/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="public/libs/bootstrap/css/dashboard.css" rel="stylesheet">
+	<link rel="stylesheet" href="public/libs/bootstrap/css/zTreeStyle.css" type="text/css">
+	<link rel="stylesheet" href="public/libs/codemirror/codemirror.css">
+	<script src="public/libs/codemirror/codemirror.js"></script>
+	<script src="public/libs/xquery.js"></script>
+	<script src="public/js/main.js"></script>
+	<script src="public/libs/codemirror/javascript.js"></script>
+	<style type="text/css">
+      .breakpoints {width: .8em;}
+      .breakpoint { color: #822; }
+      .CodeMirror {border: 1px solid #aaa;}
+    </style>
+	<style>
+	div, p, table, th, td {
+		list-style:none; 
+		margin:0; padding:0; 
+		color:#333; font-size:12px; 
+		font-family:dotum, Verdana, Arial, Helvetica, AppleGothic, sans-serif;
+	}
+	#testIframe {margin-left: 10px;}
+	</style>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script type="text/javascript" src="public/libs/bootstrap/js/jquery.ztree.core.js"></script>
+	<script type="text/javascript" >
+	<!-- Z-Tree -->
+	var zNodes ={};
+	var url = "http://mldev2.apa.org:8054/Debug/get-uris.xqy";
+		$(document).ready(function(){
+			$.getJSON(url, function(json) {
+				$.fn.zTree.init($("#treeDemo"), setting, json.root.children);
+			});
+		});
+  </script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">XQdebug</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right" style="padding-right: 37%;">
+            <li><a href="#">Step In</a></li>
+            <li><a href="#">Step Out</a></li>
+            <li><a href="#">Step Next</a></li>
+            <li><a href="#">Continue</a></li>
+            <li><a href="#">Finish Function</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+		  <ul id="treeDemo" class="ztree" style="width:auto; overflow:auto;"></ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Dashboard</h1>
+        </div>
+      </div>
+	  <div class="row placeholders" style="margin-left: 17%;">
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#breakpoints">Breakpoints</a></li>
+			<li><a data-toggle="tab" href="#expressions">Expressions</a></li>
+		</ul>
+		<div class="tab-content" >
+		</br>
+			<div id="breakpoints" class ="expressions-table tab-pane fade in active">
+				<table class="table table-striped">
+					<thead>
+					  <tr>
+						<th>Delete</th>
+						<th>Id</th>
+						<th>Uri</th>
+						<th>Line No.</th>
+						<th>Source</th>
+					  </tr>
+					</thead>
+					<tbody class="breakpointData">
+					  
+					</tbody>
+				</table>
+				</br>
+				</br>
+				</br>
+			</div>
+			<div id="expressions" class ="expression-table tab-pane fade" >
+				<table id="expression-table" class="table table-striped">
+					<thead>
+					  <tr>
+						<th>Delete</th>
+						<th>Expressions</th>
+						<th>Values</th>
+					  </tr>
+					</thead>
+					<tbody class="expressionsData">
+					  <tr>
+						<td>✗</td>
+						<td><input id="expr" target="_self" type="text" name="watch" size="50" onkeydown="getExpressions()"/></td>
+						<td></td>
+					  </tr>
+					</tbody>
+				</table>
+				</br>
+				</br>
+				</br>
+			</div>
+		</div>
+        <form class="debuger" style="display:none"><textarea id="code" name="code">
+		</textarea></form>
+        </div>
+    </div>
+		
+	</div>
+
+    <!-- ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script>
+	<!-- CodeMirror -->
+	var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+		lineWrapping: true,
+		matchBrackets: true,
+		showCursorWhenSelecting: true,
+		gutters: ["CodeMirror-linenumbers", "breakpoints"]
+      });
+	  editor.on("gutterClick", function(cm, n) {
+		  var info = cm.lineInfo(n);
+		  console.log("info "+info);
+		  console.log("cm "+cm);
+		  console.log("n "+n);
+		  setBreakpoint(info.line+1,n,info,cm);
+		  console.log(info.line+1);
+		});
+	</script>
+    <script src="public/libs/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
